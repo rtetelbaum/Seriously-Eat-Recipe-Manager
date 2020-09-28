@@ -6,7 +6,7 @@ ActiveRecord::Base.establish_connection(
 	database: 'db/development.db'
 )
 # turns off SQL logger, added by project devs
-ruby ActiveRecord::Base.logger = nil
+ActiveRecord::Base.logger = nil
 # alternative: ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 require_all 'lib'
