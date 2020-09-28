@@ -6,8 +6,6 @@ api_response = RestClient.get("https://api.spoonacular.com/recipes/random?number
 
 api_data = JSON.parse(api_response)
 
-binding.pry
-
 # api_data["recipes"][0]["title"]
 # api_data["recipes"][0]["veryPopular"]
 # api_data["recipes"][0]["veryHealthy"]
