@@ -11,3 +11,5 @@ tmp
 *.swp
 
 db/*.db
+
+.spoon_key.rb
