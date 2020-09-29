@@ -12,4 +12,4 @@ tmp
 
 db/*.db
 
-.spoon_key.rb
+.spoon.rb

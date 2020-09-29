@@ -1,1 +1,0 @@
-$spoon_key = "fc41886432a64dafb341a4c8ee0f955a"
