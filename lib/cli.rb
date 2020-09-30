@@ -4,7 +4,7 @@ class CLI
 
 	def welcome
 		puts "Welcome to 'Seriously, Eat!' Where seriously, we want you to eat."
-		puts "Do you have a 'Seriously, Eat!' account? (y/n)"
+		puts "\nDo you have a 'Seriously, Eat!' account? (y/n)"
 		choice = gets.chomp
 		if choice == "y"
 			puts "Please enter your username:"
@@ -39,38 +39,77 @@ class CLI
 	end
 
 	def options
-		puts "OPTIONS MENU"
+		puts "\nOPTIONS MENU"
 		puts "Choose an option!"
 		puts "1. Browse recipes"
 		puts "2. View your recipe box"
 		puts "3. Exit"
 		choice = gets.chomp
-			if choice == "1" || "1."
-				self.browse_recipes #helper method TBD
-			elsif choice == "2" || "2."
-				self.recipe_box #helper method TBD
-			elsif choice == "3" || "3."
+			if choice == "1" || choice == "1."
+				self.browse_recipes
+			elsif choice == "2" || choice == "2."
+				puts "recipe box under construction"
+				self.options
+				#self.recipe_box #helper method TBD
+			elsif choice == "3" || choice == "3."
 				puts "Goodbye!"
 			end
 	end
 
 	def browse_recipes
-		puts "BROWSE RECIPES"
+		puts "\nBROWSE RECIPES"
 		puts "How would you like to search?"
 		puts "1. Search by recipe name"
 		puts "2. View popular recipes"
 		puts "3. View healthy recipes"
 		puts "4. View vegetarian recipes"
 		puts "5. Return to OPTIONS MENU"
-
-
-		# puts "Which recipe are you looking for?"
-		# search_term = gets.chomp
-		# 1. RestClient.get("spotify.api/searchQuery")
-		# 2. JSON.parse
-		# 3. Let the user make some choices 
-		# 4. Say they choose a favorite, make the updates to your 
-		#     DB to save the song info you need easy access to and to represent the favorite 
+		choice = gets.chomp
+			if choice == "1" || choice == "1."
+				self.search_by_name
+			elsif choice == "2" || choice == "2."
+				self.search_by_popular
+			elsif choice == "3" || choice == "3."
+				self.search_by_healthy
+			elsif choice == "4" || choice == "4."
+				self.search_by_vegetarian
+			elsif choice == "5" || choice == "5."
+				self.options
+			end
 	end
 
+	def search_by_name
+		puts "\nSEARCH RECIPES BY NAME"
+		puts "Please enter a search term:"
+		search_term = gets.chomp
+		Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		self.recipe_options
+		self.browse_recipes
+	end
+	
+	def search_by_popular
+		puts "\nPOPULAR RECIPES:"
+		Recipe.where(very_popular: true).pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		self.recipe_options
+		self.browse_recipes
+	end
+
+	def search_by_healthy
+		puts "\nHEALTHY RECIPES:"
+		Recipe.where(very_healthy: true).pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		self.recipe_options
+		self.browse_recipes
+	end
+
+	def search_by_vegetarian
+		puts "\nVEGETARIAN RECIPES:"
+		Recipe.where(vegetarian: true).pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		self.recipe_options
+		self.browse_recipes
+	end
+
+	def recipe_options
+		puts "\nRECIPE OPTIONS"
+	end
+	
 end
