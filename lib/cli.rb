@@ -5,8 +5,8 @@ class CLI
 	def welcome
 		puts "Welcome to 'Seriously, Eat!' Where seriously, we want you to eat."
 		puts "Do you have a 'Seriously, Eat!' account? (y/n)"
-		response = gets.chomp
-		if response == "y"
+		choice = gets.chomp
+		if choice == "y"
 			puts "Please enter your username:"
 			username = gets.chomp
 			if User.find_by(user_name: username)
@@ -16,7 +16,7 @@ class CLI
 					choice = gets.chomp
 					self.account_option(choice)
 			end
-		elsif response == "n"
+		elsif choice == "n"
 			puts "Would you like create an account? (y/n)"
 				choice = gets.chomp
 				self.account_option(choice)
@@ -39,16 +39,33 @@ class CLI
 	end
 
 	def options
+		puts "OPTIONS MENU"
 		puts "Choose an option!"
-		puts "1. Browse Recipes"
-		puts "2. View Your Recipe Box"
+		puts "1. Browse recipes"
+		puts "2. View your recipe box"
 		puts "3. Exit"
-		choice = gets.chomp 
+		choice = gets.chomp
+			if choice == "1" || "1."
+				self.browse_recipes #helper method TBD
+			elsif choice == "2" || "2."
+				self.recipe_box #helper method TBD
+			elsif choice == "3" || "3."
+				puts "Goodbye!"
+			end
 	end
 
-	def search_recipes
-		puts "Which recipe are you looking for?"
-		search_term = gets.chomp
+	def browse_recipes
+		puts "BROWSE RECIPES"
+		puts "How would you like to search?"
+		puts "1. Search by recipe name"
+		puts "2. View popular recipes"
+		puts "3. View healthy recipes"
+		puts "4. View vegetarian recipes"
+		puts "5. Return to OPTIONS MENU"
+
+
+		# puts "Which recipe are you looking for?"
+		# search_term = gets.chomp
 		# 1. RestClient.get("spotify.api/searchQuery")
 		# 2. JSON.parse
 		# 3. Let the user make some choices 
