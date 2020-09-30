@@ -108,6 +108,31 @@ class CLI
 		self.browse_recipes
 	end
 
+	def view_recipe_box
+		# puts saved recipes list, or says empty
+		# select recipe by number, if !number puts this number doesn't exist, if exists call modify_recipe_box
+		# go back to options
+	end
+
+	def modify_recipe_box
+		# view website and stay in this menu
+		# add note to recipe calls add_note_to_recipe
+		# remove recipe from recipe box calls remove_recipe
+		# back to view_recipe_box
+	end
+
+	def add_note_to_recipe
+		# prompt for string note
+		# add string to recipe_note column for that recipe
+		# puts not added
+		# returns to view_recipe_box
+	end
+
+	def remove_recipe
+		# removes the recipe
+		# puts removed, then return to view_recipe box
+	end
+
 	def recipe_options
 		puts "\nRECIPE OPTIONS"
 	end
