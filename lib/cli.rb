@@ -45,14 +45,13 @@ class CLI
 		puts "\nOPTIONS MENU"
 		puts "Choose an option!"
 		puts "1. Browse recipes"
-		puts "2. View your recipe box"
+		puts "2. View your Recipe Box (saved recipes)"
 		puts "3. Exit"
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.browse_recipes
 			elsif choice == "2" || choice == "2."
-				puts "recipe box under construction"
-				self.options
+				self.view_recipe_box
 				#self.recipe_box #helper method TBD
 			elsif choice == "3" || choice == "3."
 				puts "Goodbye!"
@@ -93,10 +92,12 @@ class CLI
 			url_array = Recipe.where(title: recipe_title).pluck(:source_url)
 			url = url_array[0]
 			system("open", "#{url}") 
+			self.recipe_options(recipe_title)
 		elsif response == "2" || response == "2."
 			current_recipe = Recipe.find_by(title: recipe_title)
 			RecipeBox.create(user_id: @current_user.id, recipe_id: current_recipe.id)
-			puts "your recipe #{recipe_title} has been saved."
+			puts "your recipe '#{recipe_title}' has been saved."
+			self.recipe_options(recipe_title)
 		elsif response == "3" || response == "3."
 			self.browse_recipes
 		end
@@ -107,7 +108,7 @@ class CLI
 		puts "Please enter a search term:"
 		search_term = gets.chomp
 		results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
-			until results != []
+			until !results.empty?
 				puts "No matching results, please try again:"
 				search_term = gets.chomp
 				results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
@@ -118,34 +119,54 @@ class CLI
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
-		self.browse_recipes
 	end
 	
 	def search_by_popular
 		puts "\nPOPULAR RECIPES:"
-		Recipe.where(very_popular: true).pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		self.recipe_options
-		self.browse_recipes
+		results = Recipe.where(very_popular: true).pluck(:title)
+		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		puts "Please select a recipe number:"
+		recipe_number = gets.chomp
+		index = recipe_number.to_i - 1
+		recipe_title = results[index]
+		self.recipe_options(recipe_title)
 	end
 
 	def search_by_healthy
 		puts "\nHEALTHY RECIPES:"
-		Recipe.where(very_healthy: true).pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		self.recipe_options
-		self.browse_recipes
+		results = Recipe.where(very_healthy: true).pluck(:title)
+		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		puts "Please select a recipe number:"
+		recipe_number = gets.chomp
+		index = recipe_number.to_i - 1
+		recipe_title = results[index]
+		self.recipe_options(recipe_title)
 	end
 
 	def search_by_vegetarian
 		puts "\nVEGETARIAN RECIPES:"
-		Recipe.where(vegetarian: true).pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		self.recipe_options
-		self.browse_recipes
+		results = Recipe.where(vegetarian: true).pluck(:title)
+		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		puts "Please select a recipe number:"
+		recipe_number = gets.chomp
+		index = recipe_number.to_i - 1
+		recipe_title = results[index]
+		self.recipe_options(recipe_title)
 	end
 
 	def view_recipe_box
-		# puts saved recipes list, or says empty
+		puts "\nYOUR RECIPE BOX"
 		# select recipe by number, if !number puts this number doesn't exist, if exists call modify_recipe_box
 		# go back to options
+		results = RecipeBox.where(user_id: @current_user.id)
+			if results.empty?
+				puts "Your Recipe Box is empty"
+				self.options
+			elsif !results.empty?
+				results.each_with_index { |r, i| puts "#{i.next}. #{Recipe.find(r.recipe_id).title}"}
+				puts "Please select a recipe number to view the recipe, add a note to the recipe, or remove it from your Recipe Box:"
+				choice = gets.chomp
+			end
 	end
 
 	def modify_recipe_box
