@@ -54,7 +54,9 @@ class CLI
 	end
 
 	def options
-		puts "\nOPTIONS MENU"
+		pastel = Pastel.new
+		puts pastel.yellow.on_blue.bold("\nOPTIONS MENU")
+		# puts "\nOPTIONS MENU"
 		puts "Choose an option!"
 		puts "1. Browse recipes"
 		puts "2. View your Recipe Box (saved recipes)"
