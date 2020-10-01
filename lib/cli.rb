@@ -52,9 +52,9 @@ class CLI
 				self.browse_recipes
 			elsif choice == "2" || choice == "2."
 				self.view_recipe_box
-				#self.recipe_box #helper method TBD
 			elsif choice == "3" || choice == "3."
 				puts "Goodbye!"
+				exit
 			end
 	end
 
@@ -82,16 +82,14 @@ class CLI
 
 	def recipe_options(recipe_title)
 		puts "\nRECIPE OPTIONS"
-		puts "The recipe you've selected is: #{recipe_title}"
+		puts "The recipe you've selected is: '#{recipe_title}''"
 		puts "Select an option:"
 		puts "1. View website for this recipe"
 		puts "2. Save recipe to Recipe Box"
 		puts "3. Go back to Browse Recipes"
 		response = gets.chomp
 		if response == "1" || response == "1."
-			url_array = Recipe.where(title: recipe_title).pluck(:source_url)
-			url = url_array[0]
-			system("open", "#{url}") 
+			self.load_recipe_url(recipe_title)
 			self.recipe_options(recipe_title)
 		elsif response == "2" || response == "2."
 			current_recipe = Recipe.find_by(title: recipe_title)
@@ -156,36 +154,84 @@ class CLI
 
 	def view_recipe_box
 		puts "\nYOUR RECIPE BOX"
-		# select recipe by number, if !number puts this number doesn't exist, if exists call modify_recipe_box
-		# go back to options
 		results = RecipeBox.where(user_id: @current_user.id)
 			if results.empty?
 				puts "Your Recipe Box is empty"
 				self.options
 			elsif !results.empty?
 				results.each_with_index { |r, i| puts "#{i.next}. #{Recipe.find(r.recipe_id).title}"}
-				puts "Please select a recipe number to view the recipe, add a note to the recipe, or remove it from your Recipe Box:"
-				choice = gets.chomp
+				puts "Please select a recipe number to view the recipe, view or add a note to the recipe, or remove it from your Recipe Box."
+				puts "Or enter 'exit' to return to options menu"
+				recipe_number = gets.chomp
+				self.options if recipe_number == "exit"
+				index = recipe_number.to_i - 1
+				recipe_title = Recipe.find(results[index].recipe_id).title
+				modify_recipe_box(recipe_title)
 			end
 	end
 
-	def modify_recipe_box
-		# view website url and stay in this menu
-		# add note to recipe calls add_note_to_recipe
-		# remove recipe from recipe box calls remove_recipe
-		# back to view_recipe_box
+	def modify_recipe_box(recipe_title)
+		puts "\nSAVED RECIPE OPTIONS"
+		puts "The saved recipe you've selected is: '#{recipe_title}''"
+		puts "Select an option:"
+		puts "1. View website for this recipe"
+		puts "2. View your note for this recipe"
+		puts "3. Add/update note to this recipe"
+		puts "4. Remove note from this recipe"
+		puts "5. Remove this recipe from your Recipe Box"
+		puts "6. Go back to Recipe Box"
+		choice = gets.chomp
+			if choice == "1" || choice == "1."
+				self.load_recipe_url(recipe_title) 
+				self.modify_recipe_box(recipe_title)
+			elsif choice == "2" || choice == "2."
+				self.view_recipe_note(recipe_title)
+			elsif choice == "3" || choice == "3."
+				self.add_note_to_recipe(recipe_title)
+			elsif choice == "4" || choice == "4."
+				self.remove_note_from_recipe(recipe_title)
+			elsif choice == "5" || choice == "5."
+				self.remove_recipe(recipe_title)
+			elsif choice == "6" || choice == "6."
+				self.view_recipe_box
+			end
 	end
 
-	def add_note_to_recipe
-		# prompt for string note
-		# add string to recipe_note column for that recipe
-		# puts not added
-		# returns to view_recipe_box
+	def view_recipe_note(recipe_title)
+		if RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note != nil
+			puts RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note
+		elsif RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note == nil
+			puts "There is no note for this recipe"
+			self.modify_recipe_box(recipe_title)
+		end
+		self.modify_recipe_box(recipe_title)
 	end
 
-	def remove_recipe
-		# removes the recipe
-		# puts removed, then return to view_recipe box
+	def add_note_to_recipe(recipe_title)
+		puts "\nADD/UPDATE NOTE TO RECIPE"
+		puts "Recipe to add note to: '#{recipe_title}'"
+		puts "Please type the note you would like to add:"
+		note = gets.chomp
+		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: note)
+		puts "Your note has been added to this recipe"
+		self.view_recipe_box
+	end
+
+	def remove_note_from_recipe(recipe_title)
+		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: nil)
+		self.view_recipe_box
+	end
+
+	def remove_recipe(recipe_title)
+		puts "This recipe was removed from your Recipe Box: '#{recipe_title}'"
+		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).destroy
+		self.view_recipe_box
+	end
+
+	def load_recipe_url(recipe_title)
+		url_array = Recipe.where(title: recipe_title).pluck(:source_url)
+		url = url_array[0]
+		system("open", "#{url}") 
 	end
 	
 end
