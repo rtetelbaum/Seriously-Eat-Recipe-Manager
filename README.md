@@ -3,20 +3,22 @@ Seriously Eat, Recipe Manager
 
 
 ## DESCRIPTION
-This app pulled API content from Spoonacular so users can browse, save, update (add notes to) 
-and/or remove recipes from their personal recipe box. Users are prompted to either log in to their 
-existing account or create a new one.
-
+This app pulled API content from Spoonacular.
+Users can (via prompt) create a user id and/or log in through an existing id.
+They can browse recipes & save recipes to their personal recipe box.
+They can peruse existing recipes in their personal recipe box.
+They can also update (add notes to) and/or remove recipes from their personal recipe box.
 
 ## AUTHORS
 Roman Tetelbaum and Shelby Talbert
 
 
 ## ACKNOWLEDGEMENTS
-Some coding examples/lessons guided us in certain complex functionalities:
-Jesus Castello of Ruby Guides - his code to search for partial matches: .where("title LIKE ?", "%" + search_term + "%")
-Big thanks to Jim O'Neal for .pluck -- http://jamesponeal.github.io/projects/active-record-sheet.html
-Flatiron Instructor: thanks to Dwayne H Technical Coach, we went back to Jukebox Lab from pre-work 
-to set up our numbered menus.
-We downloaded the following for our initial environment and also the following gems to 'prettify' the project: TBD
+As noted above, all API content was sourced through Spoonacular. https://spoonacular.com/food-api
 
+Thanks to Jesus Castello of Ruby Guides for his guidance on Active Record searching for partial matches: .where("title LIKE ?", "%" + search_term + "%")
+https://www.rubyguides.com/
+
+Big thanks to Jim O'Neal for .pluck -- http://jamesponeal.github.io/projects/active-record-sheet.html
+
+Thanks to Dwayne H Flatiron Technical Coach, we went back to Learn.co Jukebox Lab from pre-work to set up our numbered menus.
