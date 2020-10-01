@@ -1,3 +1,4 @@
 class User < ActiveRecord::Base
-  has_many :recipes, through: :recipe_box
+	has_many :recipe_boxes
+	has_many :recipes, through: :recipe_boxes
 end

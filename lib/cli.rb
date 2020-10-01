@@ -28,7 +28,7 @@ class CLI
 
 	def account_option(choice)
 		if choice == "y"
-			self.create_new_user
+			self.create_new_user        #this kicked me out of system after creating user. need to go to #options
 		elsif choice == "n"
 			puts "Goodbye!"
 		end
@@ -38,7 +38,7 @@ class CLI
 		puts "Please enter a new username." 
 		new_username = gets.chomp
 		@current_user = User.create(user_name: new_username)
-		puts "Welcome, #{new_username}. We hope you're hungry!"
+		puts "Welcome, #{new_username}. We hope you're hungry!\n"
 	end
 
 	def options
@@ -46,7 +46,7 @@ class CLI
 		puts "Choose an option!"
 		puts "1. Browse recipes"
 		puts "2. View your Recipe Box (saved recipes)"
-		puts "3. Exit"
+		puts "3. Exit\n"
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.browse_recipes
@@ -65,7 +65,7 @@ class CLI
 		puts "2. View popular recipes"
 		puts "3. View healthy recipes"
 		puts "4. View vegetarian recipes"
-		puts "5. Return to OPTIONS MENU"
+		puts "5. Return to OPTIONS MENU\n"
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.search_by_name
@@ -86,7 +86,7 @@ class CLI
 		puts "Select an option:"
 		puts "1. View website for this recipe"
 		puts "2. Save recipe to Recipe Box"
-		puts "3. Go back to Browse Recipes"
+		puts "3. Go back to Browse Recipes\n"
 		response = gets.chomp
 		if response == "1" || response == "1."
 			self.load_recipe_url(recipe_title)
@@ -112,8 +112,8 @@ class CLI
 				results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			end
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"
-		recipe_number = gets.chomp
+		puts "Please select a recipe number:"          #these 5 lines of code have code smell. we need a helper method!
+		recipe_number = gets.chomp 
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
@@ -123,8 +123,8 @@ class CLI
 		puts "\nPOPULAR RECIPES:"
 		results = Recipe.where(very_popular: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"
-		recipe_number = gets.chomp
+		puts "Please select a recipe number:"       #these 5 lines of code have code smell. we need a helper method!
+		recipe_number = gets.chomp       
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
@@ -134,7 +134,7 @@ class CLI
 		puts "\nHEALTHY RECIPES:"
 		results = Recipe.where(very_healthy: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"
+		puts "Please select a recipe number:"        #these 5 lines of code have code smell. we need a helper method!
 		recipe_number = gets.chomp
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -145,7 +145,7 @@ class CLI
 		puts "\nVEGETARIAN RECIPES:"
 		results = Recipe.where(vegetarian: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"
+		puts "Please select a recipe number:"            #these 5 lines of code have code smell. we need a helper method!
 		recipe_number = gets.chomp
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -179,7 +179,7 @@ class CLI
 		puts "3. Add/update note to this recipe"
 		puts "4. Remove note from this recipe"
 		puts "5. Remove this recipe from your Recipe Box"
-		puts "6. Go back to Recipe Box"
+		puts "6. Go back to Recipe Box\n"
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.load_recipe_url(recipe_title) 

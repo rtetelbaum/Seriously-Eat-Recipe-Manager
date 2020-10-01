@@ -1,8 +1,8 @@
 require_relative '../config/environment.rb'
-require_relative '../.spoon_key.rb'
+require_relative '../.spoon.rb'
 
-# User.delete_all
-# RecipeBox.delete_all
+User.delete_all
+RecipeBox.delete_all
 Recipe.delete_all
 
 #https://api.spoonacular.com/recipes/716429/information?apiKey=YOUR-API-KEY
