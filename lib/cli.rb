@@ -8,78 +8,80 @@ class CLI
 		font = TTY::Font.new(:standard)
 		pastel = Pastel.new
 		starvin = Sound.new('./starvin.wav')
-		puts pastel.yellow.on_cyan.bold(font.write("Welcome  to"))
+		puts pastel.bright_magenta.bold(font.write("Welcome  to"))
 		sleep(2)
-		puts pastel.yellow.on_blue.bold(font.write("Seriously,  Eat!"))
+		puts pastel.bright_magenta.bold(font.write("Seriously,  Eat!"))
 		sleep(2)
-		puts pastel.yellow.on_magenta.bold(font.write("Where  seriously..."))
+		puts pastel.bright_magenta.bold(font.write("Where  seriously..."))
 		sleep(2)
-		puts pastel.yellow.on_bright_blue.bold(font.write("we  want  you  to  eat."))
+		puts pastel.bright_magenta.bold(font.write("we  want  you  to  eat."))
 		starvin.play
 		sleep(3)
-		puts "\nDo you have a 'Seriously, Eat!' account? (y/n)"
+		puts pastel.bright_magenta.on_blue.bold("\nDo you have a 'Seriously, Eat!' account? (y/n)\n")
 		choice = gets.chomp
 		if choice == "y"
-			puts "\nPlease enter your username:"
+			puts pastel.bright_magenta.on_blue.bold("\nPlease enter your username:\n")
 			username = gets.chomp
 			if User.find_by(user_name: username)
 				@current_user = User.find_by(user_name: username)
 				self.options
 			else
-				puts "\nThis username does not exist. Would you like create an account? (y/n)"
+				puts pastel.bright_magenta.on_blue.bold("\nThis username does not exist. Would you like create an account? (y/n)\n")
 					choice = gets.chomp
 					self.account_option(choice)
 			end
 		elsif choice == "n"
-			puts "Would you like create an account? (y/n)"
+			puts pastel.bright_magenta.on_blue.bold("\nWould you like create an account? (y/n)\n")
 				choice = gets.chomp
 				self.account_option(choice)
 		end
 	end
 
 	def account_option(choice)
+		pastel = Pastel.new
 		if choice == "y"
 			self.create_new_user
 			self.options
 		elsif choice == "n"
-			puts "Goodbye!"
+			puts pastel.bright_magenta.on_blue.bold("\nGoodbye!\n")
 		end
 	end
 
 	def create_new_user
-		puts "Please enter a new username." 
+		pastel = Pastel.new
+		puts pastel.bright_magenta.on_blue.bold("\nPlease enter a new username:\n") 
 		new_username = gets.chomp
 		@current_user = User.create(user_name: new_username)
-		puts "Welcome, #{new_username}. We hope you're hungry!\n"
+		puts pastel.bright_magenta.on_blue.bold("\nWelcome, #{new_username}. We hope you're hungry!\n")
 	end
 
 	def options
 		pastel = Pastel.new
-		puts pastel.yellow.on_blue.bold("\nOPTIONS MENU")
-		# puts "\nOPTIONS MENU"
-		puts "Choose an option!"
-		puts "1. Browse recipes"
-		puts "2. View your Recipe Box (saved recipes)"
-		puts "3. Exit\n\n"
+		puts pastel.bright_magenta.on_blue.bold("\nOPTIONS MENU")
+		puts pastel.bright_magenta("Choose an option!")
+		puts pastel.bright_magenta("1. Browse recipes")
+		puts pastel.bright_magenta("2. View your Recipe Box (saved recipes)")
+		puts pastel.bright_magenta("3. Exit\n")
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.browse_recipes
 			elsif choice == "2" || choice == "2."
 				self.view_recipe_box
 			elsif choice == "3" || choice == "3."
-				puts "Goodbye!"
+				puts pastel.bright_magenta.on_blue.bold("\nGoodbye!\n")
 				exit
 			end
 	end
 
 	def browse_recipes
-		puts "\nBROWSE RECIPES"
-		puts "How would you like to search?"
-		puts "1. Search by recipe name"
-		puts "2. View popular recipes"
-		puts "3. View healthy recipes"
-		puts "4. View vegetarian recipes"
-		puts "5. Return to Options Menu\n\n"
+		pastel = Pastel.new
+		puts pastel.bright_magenta.on_blue.bold("\nBROWSE RECIPES")
+		puts pastel.bright_magenta("How would you like to search?")
+		puts pastel.bright_magenta("1. Search by recipe name")
+		puts pastel.bright_magenta("2. View popular recipes")
+		puts pastel.bright_magenta("3. View healthy recipes")
+		puts pastel.bright_magenta("4. View vegetarian recipes")
+		puts pastel.bright_magenta("5. Return to Options Menu\n")
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.search_by_name
@@ -95,12 +97,13 @@ class CLI
 	end
 
 	def recipe_options(recipe_title)
-		puts "\nRECIPE OPTIONS"
-		puts "The recipe you've selected is: '#{recipe_title}''"
-		puts "\nSelect an option:"
-		puts "1. View website for this recipe"
-		puts "2. Save recipe to Recipe Box"
-		puts "3. Go back to Browse Recipes\n\n"
+		pastel = Pastel.new
+		puts pastel.bright_magenta.on_blue.bold("\nRECIPE OPTIONS")
+		puts pastel.bright_magenta("The recipe you've selected is: '#{recipe_title}''")
+		puts pastel.bright_magenta("\nSelect an option:")
+		puts pastel.bright_magenta("1. View website for this recipe")
+		puts pastel.bright_magenta("2. Save recipe to Recipe Box")
+		puts pastel.bright_magenta("3. Go back to Browse Recipes\n")
 		response = gets.chomp
 		if response == "1" || response == "1."
 			self.load_recipe_url(recipe_title)
@@ -108,7 +111,7 @@ class CLI
 		elsif response == "2" || response == "2."
 			current_recipe = Recipe.find_by(title: recipe_title)
 			RecipeBox.create(user_id: @current_user.id, recipe_id: current_recipe.id)
-			puts "your recipe '#{recipe_title}' has been saved."
+			puts pastel.bright_magenta("Your recipe '#{recipe_title}' has been saved.\n")
 			self.recipe_options(recipe_title)
 		elsif response == "3" || response == "3."
 			self.browse_recipes
@@ -116,18 +119,19 @@ class CLI
 	end
 
 	def search_by_name
-		puts "\nSEARCH RECIPES BY NAME\n\n"
-		puts "Please enter a search term:\n\n"
+		pastel = Pastel.new
+		puts "\nSEARCH RECIPES BY NAME\n"
+		puts "Please enter a search term:\n"
 		search_term = gets.chomp
 		results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			until !results.empty?
-				puts "No matching results, please try again:\n\n"
+				puts "No matching results, please try again:\n"
 				search_term = gets.chomp
 				"\n"
 				results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			end
-		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n\n"          
+		results.each_with_index { |r, i| puts pastel.bright_magenta("#{i.next}. #{r}") }
+		puts "Please select a recipe number:\n"          
 		recipe_number = gets.chomp 
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -135,10 +139,11 @@ class CLI
 	end
 	
 	def search_by_popular
+		pastel = Pastel.new
 		puts "\nPOPULAR RECIPES:"
 		results = Recipe.where(very_popular: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n\n"       
+		puts "Please select a recipe number:\n"       
 		recipe_number = gets.chomp       
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -146,10 +151,11 @@ class CLI
 	end
 
 	def search_by_healthy
+		pastel = Pastel.new
 		puts "\nHEALTHY RECIPES:"
 		results = Recipe.where(very_healthy: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n\n"        
+		puts "Please select a recipe number:\n"        
 		recipe_number = gets.chomp
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -157,10 +163,11 @@ class CLI
 	end
 
 	def search_by_vegetarian
+		pastel = Pastel.new
 		puts "\nVEGETARIAN RECIPES:"
 		results = Recipe.where(vegetarian: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n\n"            
+		puts "Please select a recipe number:\n"            
 		recipe_number = gets.chomp
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -168,6 +175,7 @@ class CLI
 	end
 
 	def view_recipe_box
+		pastel = Pastel.new
 		puts "\nYOUR RECIPE BOX"
 		results = RecipeBox.where(user_id: @current_user.id)
 			if results.empty?
@@ -186,6 +194,7 @@ class CLI
 	end
 
 	def modify_recipe_box(recipe_title)
+		pastel = Pastel.new
 		puts "\nSAVED RECIPE OPTIONS"
 		puts "The saved recipe you've selected is: '#{recipe_title}''"
 		puts "Select an option:"
@@ -194,7 +203,7 @@ class CLI
 		puts "3. Add/update note to this recipe"
 		puts "4. Remove note from this recipe"
 		puts "5. Remove this recipe from your Recipe Box"
-		puts "6. Go back to Recipe Box\n\n"
+		puts "6. Go back to Recipe Box\n"
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.load_recipe_url(recipe_title) 
@@ -213,6 +222,7 @@ class CLI
 	end
 
 	def view_recipe_note(recipe_title)
+		pastel = Pastel.new
 		if RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note != nil
 			puts RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note
 		elsif RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note == nil
@@ -223,6 +233,7 @@ class CLI
 	end
 
 	def add_note_to_recipe(recipe_title)
+		pastel = Pastel.new
 		puts "\nADD/UPDATE NOTE TO RECIPE"
 		puts "Recipe to add note to: '#{recipe_title}'"
 		puts "Please type the note you would like to add:"
@@ -233,12 +244,14 @@ class CLI
 	end
 
 	def remove_note_from_recipe(recipe_title)
+		pastel = Pastel.new
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: nil)
 		puts "This note was removed from your recipe: '#{recipe_title}'"
 		self.view_recipe_box
 	end
 
 	def remove_recipe(recipe_title)
+		pastel = Pastel.new
 		puts "This recipe was removed from your Recipe Box: '#{recipe_title}'"
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).destroy
 		self.view_recipe_box
