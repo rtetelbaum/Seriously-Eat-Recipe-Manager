@@ -1,15 +1,18 @@
 require_relative '../config/environment.rb'
 
-class CLI 
+class CLI
+
+	attr_accessor :current_user
 
 	def welcome
-		puts "Welcome to 'Seriously, Eat!' Where seriously, we want you to eat."
+		puts "\nWelcome to 'Seriously, Eat!' Where seriously, we want you to eat."
 		puts "\nDo you have a 'Seriously, Eat!' account? (y/n)"
 		choice = gets.chomp
 		if choice == "y"
 			puts "Please enter your username:"
 			username = gets.chomp
 			if User.find_by(user_name: username)
+				@current_user = User.find_by(user_name: username)
 				self.options
 			else
 				puts "This username does not exist. Would you like create an account? (y/n)"
@@ -34,7 +37,7 @@ class CLI
 	def create_new_user
 		puts "Please enter a new username." 
 		new_username = gets.chomp
-		User.create(user_name: new_username)
+		@current_user = User.create(user_name: new_username)
 		puts "Welcome, #{new_username}. We hope you're hungry!"
 	end
 
@@ -78,12 +81,43 @@ class CLI
 			end
 	end
 
+	def recipe_options(recipe_title)
+		puts "\nRECIPE OPTIONS"
+		puts "The recipe you've selected is: #{recipe_title}"
+		puts "Select an option:"
+		puts "1. View website for this recipe"
+		puts "2. Save recipe to Recipe Box"
+		puts "3. Go back to Browse Recipes"
+		response = gets.chomp
+		if response == "1" || response == "1."
+			url_array = Recipe.where(title: recipe_title).pluck(:source_url)
+			url = url_array[0]
+			system("open", "#{url}") 
+		elsif response == "2" || response == "2."
+			current_recipe = Recipe.find_by(title: recipe_title)
+			RecipeBox.create(user_id: @current_user.id, recipe_id: current_recipe.id)
+			puts "your recipe #{recipe_title} has been saved."
+		elsif response == "3" || response == "3."
+			self.browse_recipes
+		end
+	end
+
 	def search_by_name
 		puts "\nSEARCH RECIPES BY NAME"
 		puts "Please enter a search term:"
 		search_term = gets.chomp
-		Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title).each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		self.recipe_options
+		results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
+			until results != []
+				puts "No matching results, please try again:"
+				search_term = gets.chomp
+				results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
+			end
+		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
+		puts "Please select a recipe number:"
+		recipe_number = gets.chomp
+		index = recipe_number.to_i - 1
+		recipe_title = results[index]
+		self.recipe_options(recipe_title)
 		self.browse_recipes
 	end
 	
@@ -115,7 +149,7 @@ class CLI
 	end
 
 	def modify_recipe_box
-		# view website and stay in this menu
+		# view website url and stay in this menu
 		# add note to recipe calls add_note_to_recipe
 		# remove recipe from recipe box calls remove_recipe
 		# back to view_recipe_box
@@ -131,10 +165,6 @@ class CLI
 	def remove_recipe
 		# removes the recipe
 		# puts removed, then return to view_recipe box
-	end
-
-	def recipe_options
-		puts "\nRECIPE OPTIONS"
 	end
 	
 end
