@@ -5,17 +5,28 @@ class CLI
 	attr_accessor :current_user
 
 	def welcome
-		puts "\nWelcome to 'Seriously, Eat!' Where seriously, we want you to eat."
+		font = TTY::Font.new(:standard)
+		pastel = Pastel.new
+		starvin = Sound.new('./starvin.wav')
+		puts pastel.yellow.on_cyan.bold(font.write("Welcome  to"))
+		sleep(2)
+		puts pastel.yellow.on_blue.bold(font.write("Seriously,  Eat!"))
+		sleep(2)
+		puts pastel.yellow.on_magenta.bold(font.write("Where  seriously..."))
+		sleep(2)
+		puts pastel.yellow.on_bright_blue.bold(font.write("we  want  you  to  eat."))
+		starvin.play
+		sleep(3)
 		puts "\nDo you have a 'Seriously, Eat!' account? (y/n)"
 		choice = gets.chomp
 		if choice == "y"
-			puts "Please enter your username:"
+			puts "\nPlease enter your username:"
 			username = gets.chomp
 			if User.find_by(user_name: username)
 				@current_user = User.find_by(user_name: username)
 				self.options
 			else
-				puts "This username does not exist. Would you like create an account? (y/n)"
+				puts "\nThis username does not exist. Would you like create an account? (y/n)"
 					choice = gets.chomp
 					self.account_option(choice)
 			end
@@ -66,7 +77,7 @@ class CLI
 		puts "2. View popular recipes"
 		puts "3. View healthy recipes"
 		puts "4. View vegetarian recipes"
-		puts "5. Return to OPTIONS MENU\n\n"
+		puts "5. Return to Options Menu\n\n"
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.search_by_name
@@ -84,7 +95,7 @@ class CLI
 	def recipe_options(recipe_title)
 		puts "\nRECIPE OPTIONS"
 		puts "The recipe you've selected is: '#{recipe_title}''"
-		puts "Select an option:"
+		puts "\nSelect an option:"
 		puts "1. View website for this recipe"
 		puts "2. Save recipe to Recipe Box"
 		puts "3. Go back to Browse Recipes\n\n"
@@ -103,17 +114,18 @@ class CLI
 	end
 
 	def search_by_name
-		puts "\nSEARCH RECIPES BY NAME"
-		puts "Please enter a search term:"
+		puts "\nSEARCH RECIPES BY NAME\n\n"
+		puts "Please enter a search term:\n\n"
 		search_term = gets.chomp
 		results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			until !results.empty?
-				puts "No matching results, please try again:"
+				puts "No matching results, please try again:\n\n"
 				search_term = gets.chomp
+				"\n"
 				results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			end
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"          
+		puts "Please select a recipe number:\n\n"          
 		recipe_number = gets.chomp 
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -124,7 +136,7 @@ class CLI
 		puts "\nPOPULAR RECIPES:"
 		results = Recipe.where(very_popular: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"       
+		puts "Please select a recipe number:\n\n"       
 		recipe_number = gets.chomp       
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -135,7 +147,7 @@ class CLI
 		puts "\nHEALTHY RECIPES:"
 		results = Recipe.where(very_healthy: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"        
+		puts "Please select a recipe number:\n\n"        
 		recipe_number = gets.chomp
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -146,7 +158,7 @@ class CLI
 		puts "\nVEGETARIAN RECIPES:"
 		results = Recipe.where(vegetarian: true).pluck(:title)
 		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:"            
+		puts "Please select a recipe number:\n\n"            
 		recipe_number = gets.chomp
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
@@ -214,12 +226,13 @@ class CLI
 		puts "Please type the note you would like to add:"
 		note = gets.chomp
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: note)
-		puts "Your note has been added to this recipe"
-		self.view_recipe_box
+		puts "Your note has been added to your recipe: '#{recipe_title}'"
+		self.modify_recipe_box(recipe_title)
 	end
 
 	def remove_note_from_recipe(recipe_title)
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: nil)
+		puts "This note was removed from your recipe: '#{recipe_title}'"
 		self.view_recipe_box
 	end
 

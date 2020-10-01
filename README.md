@@ -1,6 +1,9 @@
 ## NAME
 Seriously Eat, Recipe Manager
 
+## INSTALL INSTRUCTIONS
+From the main program directory run 'bundle install'
+To start program run 'ruby bin/start'
 
 ## DESCRIPTION
 This app pulled API content from Spoonacular.

@@ -7,6 +7,6 @@ gem "pry"
 gem "require_all"
 # everything required below added by project devs, everything above from project template
 gem 'rest-client'
-# gem 'tty-prompt'
-# gem 'tty-font'
-# gem 'awesome_print'
+gem 'tty-font'
+gem 'pastel'
+gem 'ruby2d'
