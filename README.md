@@ -2,16 +2,10 @@
 Seriously Eat, Recipe Manager
 
 
-
 ## DESCRIPTION
 This app pulled API content from Spoonacular so users can browse, save, update (add notes to) 
 and/or remove recipes from their personal recipe box. Users are prompted to either log in to their 
 existing account or create a new one.
-
-
-
-## INSTALLATION
-We downloaded the following for our initial environment and also the following gems to 'prettify' the project.
 
 
 ## AUTHORS
@@ -24,3 +18,5 @@ Jesus Castello of Ruby Guides - his code to search for partial matches: .where("
 Big thanks to Jim O'Neal for .pluck -- http://jamesponeal.github.io/projects/active-record-sheet.html
 Flatiron Instructor: thanks to Dwayne H Technical Coach, we went back to Jukebox Lab from pre-work 
 to set up our numbered menus.
+We downloaded the following for our initial environment and also the following gems to 'prettify' the project: TBD
+
