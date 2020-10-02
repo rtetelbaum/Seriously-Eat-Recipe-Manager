@@ -158,28 +158,28 @@ class CLI
 	end
 
 	def recipe_results(results)
-		recipe_title = $prompt.select($pastel.bright_magenta("Select a recipe:")) do |menu|
-			results.each { |r| menu.choice $pastel.bright_magenta("#{r}") }
-			menu.choice $pastel.bright_magenta("Go back to Browse Recipes"), -> { self.browse_recipes }
-		end
+		choices = {}
+		results.each_with_index { |r, i| choices[r] = i.next }
+		recipe_title = $prompt.select($pastel.bright_magenta("Select a recipe:"), choices)
+			#menu.choice $pastel.bright_magenta("Go back to Browse Recipes"), -> { self.browse_recipes }
 		puts ""
 		self.recipe_options(recipe_title)
 	end
 
 	def view_recipe_box
 		puts $pastel.bright_magenta.on_blue.bold("YOUR RECIPE BOX")
-		results = RecipeBox.where(user_id: @current_user.id)
+		results = RecipeBox.where(user_id: @current_user.id).pluck(:recipe_id).collect { |id| Recipe.find(id).title }
 		if results.empty?
 			puts $pastel.bright_magenta("Your Recipe Box is empty.")
 			puts ""
 			self.options
 		elsif !results.empty?
 			recipe_title = $prompt.select($pastel.bright_magenta("Select a recipe to see it, view/add a note to it, or delete it from your Recipe Box:")) do |menu|
-				results.each { |r| menu.choice $pastel.bright_magenta("#{Recipe.find(r.recipe_id).title}") }
+				results.each { |r| menu.choice $pastel.bright_magenta("#{r}") }
 				menu.choice $pastel.bright_magenta("Go back to Browse Recipes"), -> { self.options }
 			end
 			puts ""
-			modify_recipe_box(recipe_title)
+			self.modify_recipe_box(recipe_title)
 		end
 	end
 
