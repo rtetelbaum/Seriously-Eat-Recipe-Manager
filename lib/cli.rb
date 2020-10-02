@@ -38,7 +38,7 @@ class CLI
 	end
 
 	def account_option(choice)
-		pastel = Pastel.new
+		pastel = Pastel.new(eachline: "\n")
 		if choice == "y"
 			self.create_new_user
 			self.options
@@ -48,7 +48,7 @@ class CLI
 	end
 
 	def create_new_user
-		pastel = Pastel.new
+		pastel = Pastel.new(eachline: "\n")
 		puts pastel.bright_magenta.on_blue.bold("\nPlease enter a new username:\n") 
 		new_username = gets.chomp
 		@current_user = User.create(user_name: new_username)
@@ -56,8 +56,8 @@ class CLI
 	end
 
 	def options
-		pastel = Pastel.new
-		puts pastel.bright_magenta.on_blue.bold("\nOPTIONS MENU")
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nOPTIONS MENU\n")
 		puts pastel.bright_magenta("Choose an option!")
 		puts pastel.bright_magenta("1. Browse recipes")
 		puts pastel.bright_magenta("2. View your Recipe Box (saved recipes)")
@@ -74,8 +74,8 @@ class CLI
 	end
 
 	def browse_recipes
-		pastel = Pastel.new
-		puts pastel.bright_magenta.on_blue.bold("\nBROWSE RECIPES")
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nBROWSE RECIPES\n")
 		puts pastel.bright_magenta("How would you like to search?")
 		puts pastel.bright_magenta("1. Search by recipe name")
 		puts pastel.bright_magenta("2. View popular recipes")
@@ -97,8 +97,8 @@ class CLI
 	end
 
 	def recipe_options(recipe_title)
-		pastel = Pastel.new
-		puts pastel.bright_magenta.on_blue.bold("\nRECIPE OPTIONS")
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nRECIPE OPTIONS\n")
 		puts pastel.bright_magenta("The recipe you've selected is: '#{recipe_title}''")
 		puts pastel.bright_magenta("\nSelect an option:")
 		puts pastel.bright_magenta("1. View website for this recipe")
@@ -119,72 +119,76 @@ class CLI
 	end
 
 	def search_by_name
-		pastel = Pastel.new
-		puts "\nSEARCH RECIPES BY NAME\n"
-		puts "Please enter a search term:\n"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nSEARCH RECIPES BY NAME\n")
+		puts pastel.bright_magenta("Please enter a search term:\n")
 		search_term = gets.chomp
 		results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			until !results.empty?
-				puts "No matching results, please try again:\n"
+				puts pastel.bright_magenta("No matching results, please try again:\n")
 				search_term = gets.chomp
 				"\n"
 				results = Recipe.where("title LIKE ?", "%" + search_term + "%").pluck(:title)
 			end
 		results.each_with_index { |r, i| puts pastel.bright_magenta("#{i.next}. #{r}") }
-		puts "Please select a recipe number:\n"          
+		puts pastel.bright_magenta("Please select a recipe number or enter 'exit' to return to Browse Recipes:\n")        
 		recipe_number = gets.chomp 
+		self.browse_recipes if recipe_number == "exit"
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
 	end
 	
 	def search_by_popular
-		pastel = Pastel.new
-		puts "\nPOPULAR RECIPES:"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nPOPULAR RECIPES:\n")
 		results = Recipe.where(very_popular: true).pluck(:title)
-		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n"       
-		recipe_number = gets.chomp       
+		results.each_with_index { |r, i| puts pastel.bright_magenta("#{i.next}. #{r}") }
+		puts pastel.bright_magenta("Please select a recipe number or enter 'exit' to return to Browse Recipes:\n")  
+		recipe_number = gets.chomp 
+		self.browse_recipes if recipe_number == "exit"      
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
 	end
 
 	def search_by_healthy
-		pastel = Pastel.new
-		puts "\nHEALTHY RECIPES:"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nHEALTHY RECIPES:")
 		results = Recipe.where(very_healthy: true).pluck(:title)
-		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n"        
+		results.each_with_index { |r, i| puts pastel.bright_magenta("#{i.next}. #{r}") }
+		puts pastel.bright_magenta("Please select a recipe number or enter 'exit' to return to Browse Recipes:\n")     
 		recipe_number = gets.chomp
+		self.browse_recipes if recipe_number == "exit"
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
 	end
 
 	def search_by_vegetarian
-		pastel = Pastel.new
-		puts "\nVEGETARIAN RECIPES:"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nVEGETARIAN RECIPES:\n")
 		results = Recipe.where(vegetarian: true).pluck(:title)
-		results.each_with_index { |r, i| puts "#{i.next}. #{r}" }
-		puts "Please select a recipe number:\n"            
+		results.each_with_index { |r, i| puts pastel.bright_magenta("#{i.next}. #{r}") }
+		puts pastel.bright_magenta("Please select a recipe number or enter 'exit' to return to Browse Recipes:\n")        
 		recipe_number = gets.chomp
+		self.browse_recipes if recipe_number == "exit"
 		index = recipe_number.to_i - 1
 		recipe_title = results[index]
 		self.recipe_options(recipe_title)
 	end
 
 	def view_recipe_box
-		pastel = Pastel.new
-		puts "\nYOUR RECIPE BOX"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nYOUR RECIPE BOX\n")
 		results = RecipeBox.where(user_id: @current_user.id)
 			if results.empty?
-				puts "Your Recipe Box is empty"
+				puts pastel.bright_magenta("Your Recipe Box is empty")
 				self.options
 			elsif !results.empty?
-				results.each_with_index { |r, i| puts "#{i.next}. #{Recipe.find(r.recipe_id).title}"}
-				puts "Please select a recipe number to view the recipe, view or add a note to the recipe, or remove it from your Recipe Box."
-				puts "Or enter 'exit' to return to options menu"
+				results.each_with_index { |r, i| puts pastel.bright_magenta("#{i.next}. #{Recipe.find(r.recipe_id).title}")}
+				puts pastel.bright_magenta("Please select a recipe number to view the recipe, view or add a note to the recipe, or remove it from your Recipe Box.")
+				puts pastel.bright_magenta("Or enter 'exit' to return to Options Menu")
 				recipe_number = gets.chomp
 				self.options if recipe_number == "exit"
 				index = recipe_number.to_i - 1
@@ -194,16 +198,16 @@ class CLI
 	end
 
 	def modify_recipe_box(recipe_title)
-		pastel = Pastel.new
-		puts "\nSAVED RECIPE OPTIONS"
-		puts "The saved recipe you've selected is: '#{recipe_title}''"
-		puts "Select an option:"
-		puts "1. View website for this recipe"
-		puts "2. View your note for this recipe"
-		puts "3. Add/update note to this recipe"
-		puts "4. Remove note from this recipe"
-		puts "5. Remove this recipe from your Recipe Box"
-		puts "6. Go back to Recipe Box\n"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nSAVED RECIPE OPTIONS\n")
+		puts pastel.bright_magenta("The saved recipe you've selected is: '#{recipe_title}''")
+		puts pastel.bright_magenta("Select an option:")
+		puts pastel.bright_magenta("1. View website for this recipe")
+		puts pastel.bright_magenta("2. View your note for this recipe")
+		puts pastel.bright_magenta("3. Add/update note to this recipe")
+		puts pastel.bright_magenta("4. Remove note from this recipe")
+		puts pastel.bright_magenta("5. Remove this recipe from your Recipe Box")
+		puts pastel.bright_magenta("6. Go back to Recipe Box\n")
 		choice = gets.chomp
 			if choice == "1" || choice == "1."
 				self.load_recipe_url(recipe_title) 
@@ -222,37 +226,37 @@ class CLI
 	end
 
 	def view_recipe_note(recipe_title)
-		pastel = Pastel.new
+		pastel = Pastel.new(eachline: "\n")
 		if RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note != nil
 			puts RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note
 		elsif RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).recipe_note == nil
-			puts "There is no note for this recipe"
+			puts pastel.bright_magenta("There is no note for this recipe")
 			self.modify_recipe_box(recipe_title)
 		end
 		self.modify_recipe_box(recipe_title)
 	end
 
 	def add_note_to_recipe(recipe_title)
-		pastel = Pastel.new
-		puts "\nADD/UPDATE NOTE TO RECIPE"
-		puts "Recipe to add note to: '#{recipe_title}'"
-		puts "Please type the note you would like to add:"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta.on_blue.bold("\nADD/UPDATE NOTE TO RECIPE\n")
+		puts pastel.bright_magenta("Recipe to add note to: '#{recipe_title}'")
+		puts pastel.bright_magenta("Please type the note you would like to add:")
 		note = gets.chomp
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: note)
-		puts "Your note has been added to your recipe: '#{recipe_title}'"
+		puts pastel.bright_magenta("Your note has been added to your recipe: '#{recipe_title}'")
 		self.modify_recipe_box(recipe_title)
 	end
 
 	def remove_note_from_recipe(recipe_title)
-		pastel = Pastel.new
+		pastel = Pastel.new(eachline: "\n")
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).update(recipe_note: nil)
-		puts "This note was removed from your recipe: '#{recipe_title}'"
+		puts pastel.bright_magenta("This note was removed from your recipe: '#{recipe_title}'")
 		self.view_recipe_box
 	end
 
 	def remove_recipe(recipe_title)
-		pastel = Pastel.new
-		puts "This recipe was removed from your Recipe Box: '#{recipe_title}'"
+		pastel = Pastel.new(eachline: "\n")
+		puts pastel.bright_magenta("This recipe was removed from your Recipe Box: '#{recipe_title}'")
 		RecipeBox.find_by(user_id: @current_user.id, recipe_id: Recipe.find_by(title: recipe_title).id).destroy
 		self.view_recipe_box
 	end
