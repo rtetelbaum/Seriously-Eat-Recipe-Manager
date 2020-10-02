@@ -2,6 +2,8 @@
 
 require_relative '../config/environment.rb'
 
+#binding.pry
+
 cli = CLI.new
 
 cli.welcome
