@@ -135,7 +135,8 @@ class CLI
 		elsif choice == "2" || choice == "2."
 			current_recipe = Recipe.find_by(title: recipe_title)
 			RecipeBox.create(user_id: @current_user.id, recipe_id: current_recipe.id)
-			puts $pastel.bright_magenta("Your recipe '#{recipe_title}' has been savedto your Recipe Box.")
+			puts $pastel.bright_magenta("Your recipe '#{recipe_title}' has been saved to your Recipe Box.")
+			puts ""
 			self.recipe_options(recipe_title)
 		elsif choice == "3" || choice == "3."
 			self.browse_recipes
