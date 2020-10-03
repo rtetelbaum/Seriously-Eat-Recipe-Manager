@@ -4,7 +4,7 @@ class CLI
 
 	attr_accessor :current_user, :pastel
 
-	$pastel = Pastel.new(eachline: "\n")
+	$pastel = Pastel.new.bright_magenta.on_blue.bold(eachline: "\n")
 	$prompt = TTY::Prompt.new
 
 	def welcome
@@ -158,12 +158,16 @@ class CLI
 	end
 
 	def recipe_results(results)
-		choices = {}
-		results.each_with_index { |r, i| choices[r] = i.next }
-		recipe_title = $prompt.select($pastel.bright_magenta("Select a recipe:"), choices)
-			#menu.choice $pastel.bright_magenta("Go back to Browse Recipes"), -> { self.browse_recipes }
+		choices = results
+		choices << "Go back to Browse Recipes"
+		#binding.pry
+		recipe_title = $prompt.select($pastel.bright_magenta("Select a recipe:"), (choices))
 		puts ""
-		self.recipe_options(recipe_title)
+		if recipe_title == "Go back to Browse Recipes"
+			self.browse_recipes
+		else
+			self.recipe_options(recipe_title)
+		end
 	end
 
 	def view_recipe_box
