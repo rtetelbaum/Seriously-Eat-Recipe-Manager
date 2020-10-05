@@ -2,10 +2,9 @@
 
 require_relative '../config/environment.rb'
 
-#binding.pry
+#system("bundle install")
+system("clear")
 
 cli = CLI.new
 
 cli.welcome
-
-#binding.pry

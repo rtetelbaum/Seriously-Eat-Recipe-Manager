@@ -1,10 +1,9 @@
 ## NAME
-Seriously Eat, Recipe Manager
+Seriously, Eat! Recipe Manager
 
 
 ## INSTALL INSTRUCTIONS
-From the main program directory run 'bundle install'
-To start program run 'ruby bin/start'
+To start program run 'ruby bin/start' in your terminal
 
 
 ## DESCRIPTION

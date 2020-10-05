@@ -4,7 +4,7 @@ class CLI
 
 	attr_accessor :current_user, :pastel
 
-	$pastel = Pastel.new.bright_magenta.on_blue.bold(eachline: "\n")
+	$pastel = Pastel.new(eachline: "\n")
 	$prompt = TTY::Prompt.new
 
 	def welcome
@@ -21,21 +21,22 @@ class CLI
 		# sleep(4)
 		puts ""
 		choice = $prompt.yes?($pastel.bright_magenta.on_blue.bold("Do you have a 'Seriously, Eat!' account?"))
-		puts ""
+		system("clear")
 		if choice == true
 			username = $prompt.ask($pastel.bright_magenta.on_blue.bold("Please enter your username:"))
+			puts ""
 			if User.find_by(user_name: username)
 				@current_user = User.find_by(user_name: username)
-				puts ""
+				system("clear")
 				self.options
 			else
 				choice = $prompt.yes?($pastel.bright_magenta.on_blue.bold("This username does not exist. Would you like create an account?"))
-				puts ""
+				system("clear")
 				self.account_option(choice)
 			end
 		elsif choice == false
 			choice = $prompt.yes?($pastel.bright_magenta.on_blue.bold("Would you like create an account?"))
-				puts ""
+				system("clear")
 				self.account_option(choice)
 		end
 	end
@@ -45,6 +46,7 @@ class CLI
 			self.create_new_user
 			self.options
 		elsif choice == false
+			system("clear")
 			puts $pastel.bright_magenta.on_blue.bold("Goodbye!")
 			puts ""
 		end
@@ -52,9 +54,16 @@ class CLI
 
 	def create_new_user
 		new_username = $prompt.ask($pastel.bright_magenta.on_blue.bold("Please enter a new username:"))
-		puts "" 
-		@current_user = User.create(user_name: new_username)
-		puts $pastel.bright_magenta.on_blue.bold("Welcome, #{new_username}. We hope you're hungry!")
+		system("clear")
+		if !User.find_by(user_name: new_username)
+			@current_user = User.create(user_name: new_username)
+			system("clear")
+		else
+			puts $pastel.bright_magenta.on_blue.bold("The username '#{new_username}' is already taken, please try again.")
+			puts ""
+			self.create_new_user
+		end
+		puts $pastel.bright_magenta.on_blue.bold("Welcome, #{@current_user.user_name}. We hope you're hungry!")
 		puts ""
 	end
 
