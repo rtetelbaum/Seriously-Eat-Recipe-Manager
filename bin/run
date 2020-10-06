@@ -2,7 +2,7 @@
 
 require_relative '../config/environment.rb'
 
-#system("bundle install")
+system("bundle install")
 system("clear")
 
 cli = CLI.new
